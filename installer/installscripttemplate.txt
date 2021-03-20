@@ -1,0 +1,33 @@
+﻿[Setup]
+AppId={{ [moduleguid] }}
+AppName=[modulename]
+AppVersion=[moduleversion]
+AppPublisher=[apppublisher]
+AppPublisherURL=[apppublisherurl]
+AppSupportURL=[appsupporturl]
+AppUpdatesURL=[appupdatesurl]
+DefaultDirName={userdocs}\WindowsPowerShell\Modules\[modulename]
+DisableDirPage=yes
+DefaultGroupName=[modulename]
+DisableProgramGroupPage=yes
+PrivilegesRequired=lowest
+OutputDir=[path_build]
+OutputBaseFilename=[modulename].[moduleversion].Installer
+Compression=lzma
+SolidCompression=yes
+WizardStyle=modern
+Uninstallable=yes
+SetupIconFile=[path_stage]\[modulename]\[moduleversion]\data\appicon.ico
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Files]
+Source: "[path_stage]\[modulename]\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
+
+[Icons]
+Name: "{userdesktop}\[modulename]"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-executionpolicy bypass -noexit -noprofile -file ""{app}\[moduleversion]\data\banner.ps1"""; IconFilename: "{app}\[moduleversion]\data\AppIcon.ico"
+
+[Run]
+Filename: "Powershell.exe"; Parameters: "-executionpolicy bypass -noexit -noprofile -file ""{app}\[moduleversion]\data\banner.ps1"""; Description: "Run [modulename]"; Flags: postinstall nowait
+

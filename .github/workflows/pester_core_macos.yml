@@ -1,0 +1,23 @@
+﻿name: Pester Core MacOS
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  test-posh:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Pester unit tests
+      run: |
+        Write-host $PSVersionTable.PSVersion.Major $PSVersionTable.PSRemotingProtocolVersion.Minor
+        Set-PSRepository psgallery -InstallationPolicy trusted
+        Import-Module -Name Pester -Force
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Path = "tests/unit"
+        $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Filter.ExcludeTag = 'WindowsOnly'
+        $PesterConfiguration.Output.Verbosity = "Detailed"
+        Invoke-Pester -Configuration $PesterConfiguration
+      shell: pwsh

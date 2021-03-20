@@ -1,0 +1,38 @@
+{
+    "Versions": [
+        {
+            "Version": "1.0.0",
+            "Date": "",
+            "Items": [
+                {
+                    "Type": "other",
+                    "Message": "First version"
+                }
+            ]
+        },
+        {
+            "Version": "1.0.4",
+            "Date": "2021-01-22",
+            "Items": [
+                {
+                    "Type": "feature",
+                    "Message": "Add-QueueItem: Added support for items to be passed via pipeline"
+                },
+                {
+                    "Type": "other",
+                    "Message": "Function help added"
+                }
+            ]
+        },
+        {
+            "Version": "1.0.5",
+            "Date": "2021-01-22",
+            "Items": [
+                {
+                    "Type": "other",
+                    "Message": "Built for PSGallery publish"
+                }
+            ]
+        }
+    ]
+}

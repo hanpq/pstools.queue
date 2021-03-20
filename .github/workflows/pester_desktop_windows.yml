@@ -1,0 +1,22 @@
+﻿name: Pester Desktop Windows
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  test-posh:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Pester unit tests 
+      run: |
+        Write-host $PSVersionTable.PSVersion.Major $PSVersionTable.PSRemotingProtocolVersion.Minor
+        Set-PSRepository psgallery -InstallationPolicy trusted
+        Import-Module -Name Pester -Force
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Path = "tests/Unit"
+        $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Output.Verbosity = "detailed"
+        Invoke-Pester -Configuration $PesterConfiguration
+      shell: powershell

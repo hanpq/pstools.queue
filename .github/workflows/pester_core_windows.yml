@@ -1,0 +1,46 @@
+﻿name: Pester Core Windows
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  test-posh:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Pester unit tests
+      run: |
+        Write-host $PSVersionTable.PSVersion.Major $PSVersionTable.PSRemotingProtocolVersion.Minor
+        Set-PSRepository psgallery -InstallationPolicy trusted
+        Install-Module -Name Pester -RequiredVersion 5.0.4 -confirm:$false -Force
+        Import-Module -Name Pester
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Path = "tests/unit"
+        $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.CodeCoverage.Enabled = $true
+        $PesterConfiguration.CodeCoverage.Path = "source/public/*"
+        $PesterConfiguration.Output.Verbosity = "Detailed"
+        Invoke-Pester -Configuration $PesterConfiguration
+      shell: pwsh
+    - name: Run Pester module tests 
+      run: |
+        Write-host $PSVersionTable.PSVersion.Major $PSVersionTable.PSRemotingProtocolVersion.Minor
+        Set-PSRepository psgallery -InstallationPolicy trusted
+        Import-Module -Name Pester -Force
+        Install-Module -Name PSScriptAnalyzer -RequiredVersion 1.19.1 -confirm:$false -Force
+        Import-Module -Name PSScriptAnalyzer
+        Install-Module -Name Encoding -RequiredVersion 0.0.0.1 -confirm:$false -force
+        Import-Module -Name Encoding
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Path = "Tests/Module"
+        $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Output.Verbosity = "Detailed"
+        Invoke-Pester -Configuration $PesterConfiguration
+      shell: pwsh
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.13
+      with:
+        name: civoShell
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: coverage.xml
