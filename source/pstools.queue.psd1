@@ -1,6 +1,7 @@
-﻿@{
-  RootModule = 'PS.Tools.Queue.psm1'
-  ModuleVersion = '1.0.3'
+﻿
+@{
+  RootModule = 'pstools.queue.psm1'
+  ModuleVersion = '1.0.4'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = '8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da'
   Author = 'Hannes Palmquist'
@@ -11,9 +12,9 @@
   FunctionsToExport = @('Add-QueueItem','Clear-AllQueueItems','Get-AllQueueItems','Get-NextQueueItem','Initialize-Queue','Measure-Queue','Show-NextQueueItem')
   FileList = @('.\data\appicon.ico','.\data\banner.ps1','.\docs\pstools.queue.md','.\include\module.utility.functions.ps1','.\private\class.extendedqueue.ps1','.\public\Add-QueueItem.ps1','.\public\Clear-AllQueueItems.ps1','.\public\Get-AllQueueItems.ps1','.\public\Get-NextQueueItem.ps1','.\public\Initialize-Queue.ps1','.\public\Measure-Queue.ps1','.\public\Show-NextQueueItem.ps1','.\settings\config.json','.\LICENSE.txt','.\pstools.queue.psd1','.\pstools.queue.psm1')
   PrivateData = @{
-    ModuleName = 'PS.Tools.Queue'
+    ModuleName = 'pstools.queue'
     DateCreated = '2021-01-21'
-    LastBuildDate = '2021-03-20'
+    LastBuildDate = '2021-03-21'
     PSData = @{
       Tags = @()
       ProjectUri = 'https://getps.dev/modules/PS.Tools.Daikin/quickstart'
