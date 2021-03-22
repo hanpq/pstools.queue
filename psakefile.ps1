@@ -1,120 +1,5 @@
 ﻿
 # Helper functions
-function CopyModuleFile
-{
-    [CmdletBinding()]
-    param (
-        $SourceFileRelativePath,
-        $DestinationFileRelativePath,
-        $ReplaceStrings,
-        $SourceRootFolder = '',
-        $DestinationRootFolder
-        
-    )
-
-    if ($SourceRootFolder -eq '')
-    {
-        $SourceRootFolder = (Resolve-Path -Path ('{0}\..\' -f $PSScriptRoot))
-    }
-
-    $ResultObjectHash = @{}
-
-    # Resolve Source file
-    try
-    {
-        $ResultObjectHash.SourceFilePath = (Join-Path -Path $SourceRootFolder -ChildPath $SourceFileRelativePath -ErrorAction Stop)
-        $ResultObjectHash.SourceFile = Get-Item -Path $ResultObjectHash.SourceFilePath -ErrorAction Stop
-        Write-Verbose -Message 'Resolved source file'
-    }
-    catch
-    {
-        Write-Error -Message 'Failed to look up source file' -ErrorRecord $_
-        throw $_
-    }
-
-    # Calculate source file hash
-    try
-    {
-        $ResultObjectHash.SourceFileHash = Get-FileHash -Path $ResultObjectHash.SourceFilePath -ErrorAction Stop | Select-Object -ExpandProperty hash -ErrorAction Stop
-        Write-Verbose -Message ('Resolved source file hash to be [{0}]' -f $ResultObjectHash.SourceFileHash)
-    }
-    catch
-    {
-        Write-Error -Message 'Failed to resolve source file hash' -ErrorRecord $_
-        throw $_
-    }
-
-    # Resolve destination
-    try
-    {
-        foreach ($Key in $ReplaceStrings.Keys)
-        {
-            $DestinationFileRelativePath = $DestinationFileRelativePath.Replace($Key, $ReplaceStrings[$Key])
-            Write-Verbose -Message ('Replaced {0} with {1} in destination path' -f $Key, $ReplaceStrings[$Key])
-        }
-        $ResultObjectHash.DestinationFilePath = (Join-Path -Path $DestinationRootFolder -ChildPath $DestinationFileRelativePath -ErrorAction Stop)
-        if (Test-Path -Path $ResultObjectHash.DestinationFilePath)
-        {
-            $ResultObjectHash.DestinationFile = Get-Item -Path $ResultObjectHash.DestinationFilePath -ErrorAction Stop
-            Write-Verbose -Message 'Resolved destination file'
-            $ResultObjectHash.DestinationFileHash = Get-FileHash -Path $ResultObjectHash.DestinationFilePath | Select-Object -ExpandProperty hash -ErrorAction Stop
-            Write-Verbose -Message ('Resolved destination file hash to be [{0}]' -f $ResultObjectHash.DestinationFileHash)
-        }
-        else
-        {
-            $ResultObjectHash.DestinationFile = $null
-            $ResultObjectHash.DestinationFileHash = $null
-            Write-Verbose -Message 'Destination file not found'
-        }
-    }
-    catch
-    {
-        Write-Error -Message 'Failed to resolve destination file' -ErrorRecord $_
-        throw $_
-    }
-
-    # Check hash
-    $ResultObjectHash.HashMatch = ($ResultObjectHash.SourceFileHash -eq $ResultObjectHash.DestinationFileHash)
-    if ($null -ne $ResultObjectHash.DestinationFile)
-    {
-        $ResultObjectHash.DestinationFileNewer = ($ResultObjectHash.DestinationFile.LastWriteTime -gt $ResultObjectHash.SourceFile.LastWriteTime)
-    }
-    else
-    {
-        $ResultObjectHash.DestinationFileNewer = $null
-    }
-
-    # Copy file if missing
-    try
-    {
-        if ($null -eq $ResultObjectHash.DestinationFile)
-        {
-            Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
-            Write-CheckListItem -Message ('Copied [{0}] script' -f $ResultObjectHash.SourceFile.Name) -Severity Positive
-        }
-        elseif (-not $ResultObjectHash.HashMatch)
-        {
-            if ($ResultObjectHash.DestinationFileNewer)
-            {
-                if ((Confirm-Proceed -Title 'Module file updated' -Message ('The file [{0}] is updated in the module, do you want to overwrite with the template?' -f $ResultObjectHash.SourceFile.Name) -Default 0 -YesHelp 'Copies template file to the module' -NoHelp 'No copy will be performed and the test will fail'))
-                {
-                    Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
-                    Write-CheckListItem -Message ('Updated [{0}] script' -f $ResultObjectHash.DestinationFile.Name) -Severity Positive
-                }
-            }
-            else
-            {
-                Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
-                Write-CheckListItem -Message ('Updated [{0}] script' -f $ResultObjectHash.DestinationFile.Name) -Severity Positive
-            }
-        }
-    }
-    catch
-    {
-        Write-Error -Message 'Failed to copy files' -ErrorRecord $_
-        throw $_        
-    }
-}
 
 function Write-CheckListItem
 {
@@ -163,61 +48,6 @@ function Write-CheckListItem
     else
     {
         Write-Host ('      [{0}] {1}  ' -f $SelectedChar, $Message) -ForegroundColor $SelectedColor
-    }
-}
-
-function BuildChangeLogMDX
-{
-    param (
-        [string]$ChangeLogPath,
-        [string]$OutputFilePath
-    )
-    $ChangeLog = Get-Content -Path $ChangeLogPath | ConvertFrom-Json
-    $AddContentSplat = @{
-        Path = $OutputFilePath
-    }
-    Set-Content -Path $OutputFilePath -Value @'
----
-id: changelog
-title: Changelog
----
-
-'@
-    foreach ($Version in ($ChangeLog.Versions | Sort-Object { [system.version]$_.Version } -Descending))
-    {
-        Add-Content @AddContentSplat -Value ''
-        Add-Content @AddContentSplat -Value ('## {0}' -f $Version.Version)
-        Add-Content @AddContentSplat -Value ''
-        Add-Content @AddContentSplat -Value $Version.Date
-        Add-Content @AddContentSplat -Value ''
-        Add-Content @AddContentSplat -Value '<div class="container">'
-        foreach ($Item in $Version.Items)
-        {
-            Add-Content @AddContentSplat -Value '<div class="row">'
-            switch ($Item.Type)
-            {
-                'bug'
-                {
-                    Add-Content @AddContentSplat -Value ('<div class="col col--2"><span class="badge badge--success">bug</span></div>')
-                }
-                'feature'
-                {
-                    Add-Content @AddContentSplat -Value ('<div class="col col--2"><span class="badge badge--primary">feature</span></div>')
-                }
-                'optimization'
-                {
-                    Add-Content @AddContentSplat -Value ('<div class="col col--2"><span class="badge badge--info">optimization</span></div>')
-                }
-                'other'
-                {
-                    Add-Content @AddContentSplat -Value ('<div class="col col--2"><span class="badge badge--secondary">other</span></div>')
-                }
-            }
-            Add-Content @AddContentSplat -Value ('<div class="col">{0}</div>' -f $Item.Message)
-            Add-Content @AddContentSplat -Value '</div>'
-        } 
-        Add-Content @AddContentSplat -Value '</div>'
-        Add-Content @AddContentSplat -Value ''
     }
 }
 
@@ -358,40 +188,6 @@ function Show-MultiChoise
             }
         }
     }
-}
-
-function Get-EnvPath
-{
-    <#
-    .DESCRIPTION
-       Function that lists all available environment paths.
-    .PARAMETER List
-       Lists all env paths
-    .PARAMETER Name
-        Shows the path of the specified environmental path
-    .EXAMPLE
-       Get-EnvPath
-       This example lists all available environmental paths
-    .EXAMPLE
-        Get-EnvPath -Name MyDocuments
-        This example will show the resolved path for MyDocuments
-    #>
-    [CmdletBinding(DefaultParameterSetName = 'List')]
-    param(
-        [Parameter(Mandatory, ParameterSetName = 'Name', Position = 1)][string]$Name
-    )
-    switch ($PSCmdlet.ParameterSetName)
-    {
-        'List'
-        {
-            $Result = [Environment+SpecialFolder]::GetNames([Environment+SpecialFolder]) | Sort-Object
-        }
-        'Name'
-        {
-            $Result = [Environment]::GetFolderPath($Name)
-        }
-    }
-    $Result
 }
 
 function Compare-StringArray
@@ -731,7 +527,7 @@ Task -name 'PublishToGallery' -precondition { $buildconfig.PSGallery } -action {
         if ($Continue)
         {
             $Measure = Measure-Command -Expression {
-                $ExportFolder = Join-Path -Path $path_root -ChildPath ('\Export\{0}' -f $modulename) -ErrorAction Stop # "\PSSolutionModules\<ModuleName>\Export\<ModuleName>"
+                $ExportFolder = Join-Path -Path $path_root -ChildPath ('\stage\{0}' -f $modulename) -ErrorAction Stop # "\PSSolutionModules\<ModuleName>\Export\<ModuleName>"
                 Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey 'oy2af476fmcafvdeokda2rjnh3kc2cyu5gdrwdzllnx7na' -ErrorAction Stop
             }
             Write-CheckListItem -Message 'Published module to PSGallery' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
@@ -1006,7 +802,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -1092,10 +888,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -Name $modulename -Force -ErrorAction Stop
+            Remove-Module -name $modulename -Force -ErrorAction Stop
         }
     }
     catch
@@ -1161,7 +957,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
             }
             catch
@@ -1175,7 +971,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
             }
             catch
