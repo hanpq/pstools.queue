@@ -1,7 +1,7 @@
-
+﻿
 @{
   RootModule = 'pstools.queue.psm1'
-  ModuleVersion = '1.0.5'
+  ModuleVersion = '1.1'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = '8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da'
   Author = 'Hannes Palmquist'
@@ -14,7 +14,7 @@
   PrivateData = @{
     ModuleName = 'pstools.queue'
     DateCreated = '2021-01-21'
-    LastBuildDate = '2021-03-21'
+    LastBuildDate = '2021-03-22'
     PSData = @{
       Tags = @()
       ProjectUri = 'https://getps.dev/modules/PS.Tools.Daikin/quickstart'

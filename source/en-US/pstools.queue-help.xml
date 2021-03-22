@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems schema="maml" xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Add-QueueItem</command:name>
+      <command:verb>Add</command:verb>
+      <command:noun>QueueItem</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Adds a new item to the queue</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-QueueItem</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>Queue object to add items to</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+          <maml:name>Items</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Items Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>Queue object to add items to</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+        <maml:name>Items</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill Items Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+        <dev:type>
+          <maml:name>Object[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Add-QueueItem -Queue $Queue -Item 'Foo'</dev:code>
+        <dev:remarks>
+          <maml:para>This example shows how to add an item to the queue</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Clear-AllQueueItems</command:name>
+      <command:verb>Clear</command:verb>
+      <command:noun>AllQueueItems</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Discard all queued items.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Clear-AllQueueItems</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>Queue object to discard all items in</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>Queue object to discard all items in</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Clear-AllQueueItems -Queue $Queue</dev:code>
+        <dev:remarks>
+          <maml:para>This example shows how to discard all items of the provided queue</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-AllQueueItems</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>AllQueueItems</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Collect all remaining queue items</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-AllQueueItems</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>Queue object to discard all items in</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>Queue object to discard all items in</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Get-AllQueueItems -Queue $Queue</dev:code>
+        <dev:remarks>
+          <maml:para>This example how to retreive all queue items remaining in the queue</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-NextQueueItem</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>NextQueueItem</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Returns the next object from queue. That object will be removed from the queue.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-NextQueueItem</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Queue Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill Queue Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Get-NextQueueItem -Queue $Queue</dev:code>
+        <dev:remarks>
+          <maml:para>This example with return the next item in queue.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Initialize-Queue</command:name>
+      <command:verb>Initialize</command:verb>
+      <command:noun>Queue</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This cmdlet initializes a new queue object.</maml:para>
+      <maml:para>The returned object is a wrapper class for the System.Collection.Queue class. This class (ExtendedQueue)  provides additional functionality compared to the standard Queue class. The Queue object is stored as a property of the returned object called "Queue". The object returned also contains properties containing counts of added items, removed items, additions per sec, removes per sec and  velocity (delta between add &amp; remove per sec.). The module cmdlet Measure-Queue returns these metrics.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Initialize-Queue</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>$Queue = Initialize-Queue</dev:code>
+        <dev:remarks>
+          <maml:para>This example will create a new instance of the queue object</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Measure-Queue</command:name>
+      <command:verb>Measure</command:verb>
+      <command:noun>Queue</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Returns an object with performance metrics for the provided queue.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Measure-Queue</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>Queue object to retreive performance metrics for.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>Queue object to retreive performance metrics for.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Measure-Queue -Queue $Queue</dev:code>
+        <dev:remarks>
+          <maml:para>This example will return a object containing performance metrics for the provided queue.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Show-NextQueueItem</command:name>
+      <command:verb>Show</command:verb>
+      <command:noun>NextQueueItem</command:noun>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Shows the next item in queue without removing it from queue.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Show-NextQueueItem</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Queue</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Queue Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+          <dev:type>
+            <maml:name>ExtendedQueue</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Queue</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill Queue Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ExtendedQueue</command:parameterValue>
+        <dev:type>
+          <maml:name>ExtendedQueue</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Show-NextQueueItem</dev:code>
+        <dev:remarks>
+          <maml:para>Description of example</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+</helpItems>
