@@ -1,7 +1,7 @@
-﻿
+
 @{
   RootModule = 'pstools.queue.psm1'
-  ModuleVersion = '1.0.4'
+  ModuleVersion = '1.0.5'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = '8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da'
   Author = 'Hannes Palmquist'
@@ -46,6 +46,7 @@
   CLRVersion = ''
   ProcessorArchitecture = ''
 }
+
 
 
 

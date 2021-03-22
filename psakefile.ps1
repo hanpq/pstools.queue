@@ -25,7 +25,8 @@ function CopyModuleFile
         $ResultObjectHash.SourceFilePath = (Join-Path -Path $SourceRootFolder -ChildPath $SourceFileRelativePath -ErrorAction Stop)
         $ResultObjectHash.SourceFile = Get-Item -Path $ResultObjectHash.SourceFilePath -ErrorAction Stop
         Write-Verbose -Message 'Resolved source file'
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to look up source file' -ErrorRecord $_
         throw $_
@@ -36,7 +37,8 @@ function CopyModuleFile
     {
         $ResultObjectHash.SourceFileHash = Get-FileHash -Path $ResultObjectHash.SourceFilePath -ErrorAction Stop | Select-Object -ExpandProperty hash -ErrorAction Stop
         Write-Verbose -Message ('Resolved source file hash to be [{0}]' -f $ResultObjectHash.SourceFileHash)
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to resolve source file hash' -ErrorRecord $_
         throw $_
@@ -57,13 +59,15 @@ function CopyModuleFile
             Write-Verbose -Message 'Resolved destination file'
             $ResultObjectHash.DestinationFileHash = Get-FileHash -Path $ResultObjectHash.DestinationFilePath | Select-Object -ExpandProperty hash -ErrorAction Stop
             Write-Verbose -Message ('Resolved destination file hash to be [{0}]' -f $ResultObjectHash.DestinationFileHash)
-        } else
+        }
+        else
         {
             $ResultObjectHash.DestinationFile = $null
             $ResultObjectHash.DestinationFileHash = $null
             Write-Verbose -Message 'Destination file not found'
         }
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to resolve destination file' -ErrorRecord $_
         throw $_
@@ -74,7 +78,8 @@ function CopyModuleFile
     if ($null -ne $ResultObjectHash.DestinationFile)
     {
         $ResultObjectHash.DestinationFileNewer = ($ResultObjectHash.DestinationFile.LastWriteTime -gt $ResultObjectHash.SourceFile.LastWriteTime)
-    } else
+    }
+    else
     {
         $ResultObjectHash.DestinationFileNewer = $null
     }
@@ -86,7 +91,8 @@ function CopyModuleFile
         {
             Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
             Write-CheckListItem -Message ('Copied [{0}] script' -f $ResultObjectHash.SourceFile.Name) -Severity Positive
-        } elseif (-not $ResultObjectHash.HashMatch)
+        }
+        elseif (-not $ResultObjectHash.HashMatch)
         {
             if ($ResultObjectHash.DestinationFileNewer)
             {
@@ -95,13 +101,15 @@ function CopyModuleFile
                     Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
                     Write-CheckListItem -Message ('Updated [{0}] script' -f $ResultObjectHash.DestinationFile.Name) -Severity Positive
                 }
-            } else
+            }
+            else
             {
                 Copy-Item -Path $ResultObjectHash.SourceFilePath -Destination $ResultObjectHash.DestinationFilePath -Force -ErrorAction Stop
                 Write-CheckListItem -Message ('Updated [{0}] script' -f $ResultObjectHash.DestinationFile.Name) -Severity Positive
             }
         }
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to copy files' -ErrorRecord $_
         throw $_        
@@ -151,7 +159,8 @@ function Write-CheckListItem
     if ($Milliseconds)
     {
         Write-Host ('      [{0}] {1}  ' -f $SelectedChar, $Message) -ForegroundColor $SelectedColor -NoNewline; Write-Host (' {0}ms' -f ([Math]::Round($Milliseconds))) -ForegroundColor DarkGray
-    } else
+    }
+    else
     {
         Write-Host ('      [{0}] {1}  ' -f $SelectedChar, $Message) -ForegroundColor $SelectedColor
     }
@@ -287,7 +296,8 @@ function Show-MultiChoise
             if (!$ReturnKey)
             {
                 Write-Output $MultiChoise[$key]
-            } else
+            }
+            else
             {
                 Write-Output $key
             }
@@ -304,7 +314,8 @@ function Show-MultiChoise
             if (($MultiChoise | Measure-Object | Select-Object -ExpandProperty Count) -gt $Alph.Count)
             {
                 Throw ('There are not enough defined characters({0}) for the number of choises({1})' -f ($Alph.Count), ($MultiChoise | Measure-Object | Select-Object -ExpandProperty Count))
-            } else
+            }
+            else
             {
                 # Define counter
                 $Counter = 0
@@ -339,7 +350,8 @@ function Show-MultiChoise
                 if (!$ReturnKey)
                 {
                     Write-Output $MultiChoise[($Alph.IndexOf([Char]($Key.ToString().ToUpper())))]
-                } else
+                }
+                else
                 {
                     Write-Output $key
                 }
@@ -500,7 +512,8 @@ function Test-FileEndOfLine
             {
                 $RawCode = Get-Content $ScriptFilePath -Raw -ErrorAction Stop -Encoding $Encoding
                 Write-Verbose -Message 'Successfully imported file'
-            } catch
+            }
+            catch
             {
                 Write-Error -Message 'Failed to import file' -ErrorRecord $_
                 break
@@ -561,7 +574,8 @@ function Set-FileEndOfLine
         $CodeRaw = $CodeRaw -replace "(?<![`n])(`r)(?![`n])", "`r`n"
         $CodeRaw | Set-Content $FilePath -NoNewline -Encoding UTF8 -ErrorAction Stop
         return $true
-    } catch
+    }
+    catch
     {
         $_
         return $false
@@ -596,7 +610,8 @@ TaskSetup -setup {
     try
     {
         Get-Module $modulename -ErrorAction SilentlyContinue | Remove-Module -Force -ErrorAction Stop
-    } catch
+    }
+    catch
     {
         throw $_
     }
@@ -620,8 +635,7 @@ Task -name 'Test' -depends @(
     'SetupBuildEnv',
     'PesterModuleTests',
     'PesterUnitTests',
-    'PesterIntegrationTests',
-    'CommitAndPushRepository'
+    'PesterIntegrationTests'
 )
 Task -name 'Build' -depends @(
     'Test',
@@ -658,7 +672,8 @@ Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -acti
         git -C $path_root add .
         git -C $path_root commit -m 'Build commit'
         git -C $path_root push
-    } else 
+    }
+    else 
     {
         git -C $path_root init --initial-branch=main
         git -C $path_root add .
@@ -697,7 +712,8 @@ Task -name 'CreateMissingFolders' {
                     New-Item -Path (Join-Path -Path $path_root -ChildPath $Folder) -ItemType Directory -ErrorAction Stop
                 }
                 Write-CheckListItem -Message ('Default folder missing [{0}], folder successfully created' -f $Folder) -Severity Positive -Milliseconds $Measure.TotalMilliseconds
-            } catch
+            }
+            catch
             {
                 Write-CheckListItem -Message ('Default folder missing [{0}], failed to create folder' -f $Folder) -Severity Negative -Milliseconds $Measure.TotalMilliseconds
                 $_
@@ -719,16 +735,19 @@ Task -name 'PublishToGallery' -precondition { $buildconfig.PSGallery } -action {
                 Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey 'oy2af476fmcafvdeokda2rjnh3kc2cyu5gdrwdzllnx7na' -ErrorAction Stop
             }
             Write-CheckListItem -Message 'Published module to PSGallery' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
-        } else
+        }
+        else
         {
             Write-Warning -Message 'Module was not published to PSGallery'
         }
-    } catch
+    }
+    catch
     {
         if ($_.exception.message -like 'The module*with version*cannot be published as the current version*is already available in the repository*')
         {
             Write-CheckListItem -Message 'This version is already published to PSGallery, please build a new version and try again...' -Severity Intermediate
-        } else
+        }
+        else
         {
             Write-CheckListItem -Message 'Failed to publish module to PSGallery' -Severity Negative
             Write-Host $_
@@ -782,7 +801,8 @@ Task -name 'ChangeLog' -action {
 
                 # Export change file
                 $ChangeFile | ConvertTo-Json -Depth 8 -ErrorAction Stop | Out-File $PathToChangeFile -ErrorAction Stop
-            } catch
+            }
+            catch
             {
                 Throw $_
             } 
@@ -851,7 +871,8 @@ Task -name 'FindMissingTests' -action {
             {
                 Write-CheckListItem -Message ('Tests missing for {0}' -f $File.Name) -Severity Intermediate
             }
-        } catch
+        }
+        catch
         {
             Write-CheckListItem -Severity Negative -Message ('Failed to validate if tests are available for {0} with error:' -f $File.Name, $_.exception.message)
         }
@@ -872,7 +893,8 @@ Task -name 'UpdateFunctionPSScriptInfo' -action {
             {
                 Write-CheckListItem -Message ('Updated PSScriptInfo for: {0}' -f $File.Name) -Severity Positive
             }
-        } catch
+        }
+        catch
         {
             Write-CheckListItem -Message ('Failed to update PSScriptInfo for: {0} with error: {1}' -f $File.Name, $_.exception.message)
         }
@@ -895,7 +917,8 @@ Task -name 'UpdateEncoding' -action {
                     Convert-FileEncoding -Path $PSItem.FullName -SourceEncoding $Encoding -NewEncoding 'utf-8' -OutputWithBom -ErrorAction Stop
                 }
                 Write-CheckListItem -Message ('Converted encoding for file {1} from {0} to UTF8BOM ' -f $Encoding, $PSItem.Name) -Severity Positive
-            } catch
+            }
+            catch
             {
                 throw $_
             }
@@ -916,7 +939,8 @@ Task -name 'UpdateEOL' -action {
                     Set-FileEndOfLine -FilePath $PSItem.FullName -ErrorAction Stop
                 }
                 Write-CheckListItem -Message ('Successfully updated EOL for file {0} from {1} to Windows' -f $PSItem.Name, $Result) -Severity Positive -Milliseconds $measure.TotalMilliseconds
-            } catch
+            }
+            catch
             {
                 Write-CheckListItem -Message ('Failed to update EOL for file {0} from {1} to Windows' -f $PSItem.Name, $Result) -Severity Negative
                 $_
@@ -929,7 +953,8 @@ Task -name 'RebuildManifest' -action {
     try
     {
         Update-PSModuleManifest -Path $path_modulemanifest -ModuleName $modulename -ErrorAction Stop
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -message ('Failed to rebuilded module manifest ' -f $PSItem) -Severity Negative
         $_
@@ -963,7 +988,8 @@ Task -name 'UpdateLastBuildDate' -action {
         $Measure = Measure-Command -Expression {
             Update-Metadata -Path $path_modulemanifest -PropertyName 'LastBuildDate' -Value (Get-Date).ToString('yyyy-MM-dd')
         }
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to update LastBuildDate in manifest' -Severity Negative
         $_
@@ -980,18 +1006,20 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
             Pop-Location
             Update-Metadata -Path $path_modulemanifest -PropertyName FileList -Value $AllSourceFiles.RelativePath
         }
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to add filelist' -Severity Negative
         $_
-    } finally
+    }
+    finally
     {
         $global:ErrorActionPreference = $SavedErrorActionPreference
     }
@@ -1010,7 +1038,8 @@ Task -name 'PesterUnitTests' -precondition { $buildconfig.RunPesterTests } -acti
         if ($Result.FailedCount -gt 0)
         { 
             throw
-        } else
+        }
+        else
         {
             Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
@@ -1030,7 +1059,8 @@ Task -name 'PesterModuleTests' -precondition { $buildconfig.RunPesterTests } -ac
         if ($Result.FailedCount -gt 0)
         { 
             throw
-        } else
+        }
+        else
         {
             Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
@@ -1050,7 +1080,8 @@ Task -name 'PesterIntegrationTests' -precondition { $buildconfig.RunPesterTests 
         if ($Result.FailedCount -gt 0)
         { 
             throw
-        } else
+        }
+        else
         {
             Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
@@ -1061,12 +1092,13 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -name $modulename -Force -ErrorAction Stop
+            Remove-Module -Name $modulename -Force -ErrorAction Stop
         }
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to create module help files' -Severity Negative
         throw $_
@@ -1085,7 +1117,8 @@ Task -name 'PreExportClean' -action {
                 }
             }
         }
-    } catch
+    }
+    catch
     {
         throw $_
     }
@@ -1112,7 +1145,8 @@ Task -name 'ExportCreate' -action {
                 Copy-Item -Path (Join-Path -Path $path_root_source -ChildPath $Folder) -Destination $ExportFolder -Recurse
             }
         }
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to create stage' -Severity Negative -Milliseconds $Measure.TotalMilliseconds
         throw $_
@@ -1127,21 +1161,24 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
-            } catch
+            }
+            catch
             {
                 Write-CheckListItem -Message 'Failed to create Code Signing Certificate' -Severity Negative
                 throw $_
             }
-        } elseif ($Cert.NotAfter -lt (Get-Date))
+        }
+        elseif ($Cert.NotAfter -lt (Get-Date))
         {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
-            } catch
+            }
+            catch
             {
                 Write-CheckListItem -Message 'Failed to create Code Signing Certificate' -Severity Negative
                 throw $_
@@ -1161,17 +1198,20 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
                         $null = Set-AuthenticodeSignature -Certificate $cert -TimestampServer 'http://timestamp.digicert.com' -FilePath $File.FullName -ErrorAction stop  
                     }
                     Write-CheckListItem -Message ('Signed {0}  ' -f $File.Name) -Severity Positive -Milliseconds $measure.TotalMilliseconds
-                } catch
+                }
+                catch
                 {
                     Write-CheckListItem -Message ('Failed to sign file {0}' -f $File.Name) -Severity Negative -Milliseconds $measure.TotalMilliseconds
                     throw $_
                 }
             }    
-        } else
+        }
+        else
         {
             Write-CheckListItem -Message 'Failed to sign script files, no cert found' -Severity Negative
         }
-    } catch
+    }
+    catch
     {
         throw $_.exception.message
     }
@@ -1187,7 +1227,8 @@ Task -name 'BuildZIP' -precondition { $buildconfig.CreateZIP }-action {
         $null = New-Item -Path "$path_root\release\$($import_modulemanifest.moduleversion)" -ItemType Directory -ErrorAction Stop
         Start-Sleep -Seconds 1
         Compress-Archive -Path $SourceArchive -DestinationPath $TargetArchive -Force
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to build zip archive' -Severity Negative
         throw $_
@@ -1236,7 +1277,8 @@ Task -name 'BuildInstaller' -precondition { $buildconfig.CreateInstall } -action
             Remove-Item -Path (Join-Path -Path $path_root -ChildPath ('\Installer\{0}' -f $modulename)) -Force -Recurse -ErrorAction SilentlyContinue
         }
         Write-CheckListItem -Message 'Compiled installer package' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to compile installer package' -Severity Negative
         throw $_
@@ -1255,7 +1297,8 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
             {
                 $destinations += "$HOME/.local/share/powershell/Modules"
             }
-        } else
+        }
+        else
         {
             if ($buildconfig.os.windows -and $buildconfig.edition.desktop)
             {
@@ -1267,7 +1310,8 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
             }
         }
 
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to collect module destinations' -Severity Negative
         throw $_
@@ -1276,7 +1320,8 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
         try
         {
             Copy-Item -Path $SourceArchive -Destination $PSItem -Recurse -Force
-        } catch
+        }
+        catch
         {
             Write-CheckListItem -Message 'Failed to push to module directory' -Severity Negative
             $_
@@ -1302,7 +1347,8 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
                     try
                     {
                         $PSItem.Delete()
-                    } catch
+                    }
+                    catch
                     {
 
                     }
@@ -1313,14 +1359,16 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
             if ($counter -gt 10)
             {
                 Write-CheckListItem -Message ('Failed to remove old version: {0} with error: loop counter exceeded' -f $CurrentItem.Name) -Severity Negative
-            } else
+            }
+            else
             {
                 try
                 {
                     $Item = Get-Item $path
                     $Item.Delete()
                     Write-CheckListItem -Message ('Successfully removed old version: {0}' -f $CurrentItem.Name) -Severity Positive
-                } catch
+                }
+                catch
                 {
                     Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
                 } 
@@ -1339,7 +1387,8 @@ Task -name 'PostExportClean' -action {
             }
             Remove-Item "$path_root\stage\$modulename"
         }
-    } catch
+    }
+    catch
     {
         Write-CheckListItem -Message 'Failed to clear export folder' -Severity Negative
         throw $_
