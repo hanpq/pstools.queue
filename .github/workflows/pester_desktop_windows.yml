@@ -1,4 +1,4 @@
-﻿name: Pester Desktop Windows
+﻿name: Desk Win
 on:
   pull_request:
     branches: [ main ]

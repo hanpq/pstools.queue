@@ -1,4 +1,4 @@
-﻿name: Pester Core MacOS
+﻿name: Core Mac
 on:
   pull_request:
     branches: [ main ]

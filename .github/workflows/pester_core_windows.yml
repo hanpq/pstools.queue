@@ -1,4 +1,4 @@
-﻿name: Pester Core Windows
+﻿name: Core Win
 on:
   pull_request:
     branches: [ main ]

@@ -1,4 +1,4 @@
-﻿name: Pester Core Linux
+﻿name: Core Lin
 on:
   pull_request:
     branches: [ main ]
