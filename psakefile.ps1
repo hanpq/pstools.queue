@@ -564,7 +564,7 @@ Task -name 'ChangeLog' -action {
                 Write-Host
 
                 $Changes = @()
-                $Type = Show-MultiChoise -MultiChoise 'bug', 'feature', 'optimization', 'other', 'done'
+                $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security'
                 while ($Type -ne 'done')
                 {
                     Write-Host -Object ('      Enter change item: ') -ForegroundColor DarkGray -NoNewline
@@ -573,7 +573,7 @@ Task -name 'ChangeLog' -action {
                         Type    = $Type
                         Message = $Change
                     }
-                    $Type = Show-MultiChoise -MultiChoise 'bug', 'feature', 'optimization', 'other', 'done'
+                    $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security'
                 }
 
                 Write-Host
@@ -600,7 +600,7 @@ Task -name 'ChangeLog' -action {
             }
             catch
             {
-                Throw $_
+                Throw $_ 
             } 
         }
         Write-CheckListItem -Message 'Changelog updated' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
