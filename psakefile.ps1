@@ -528,7 +528,7 @@ Task -name 'PublishToGallery' -precondition { $buildconfig.PSGallery } -action {
         {
             $Measure = Measure-Command -Expression {
                 $ExportFolder = Join-Path -Path $path_root -ChildPath ('\stage\{0}' -f $modulename) -ErrorAction Stop # "\PSSolutionModules\<ModuleName>\Export\<ModuleName>"
-                Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey 'oy2af476fmcafvdeokda2rjnh3kc2cyu5gdrwdzllnx7na' -ErrorAction Stop
+                Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey $Env:NUGET_KEY -ErrorAction Stop
             }
             Write-CheckListItem -Message 'Published module to PSGallery' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
         }
@@ -802,7 +802,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -888,10 +888,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -name $modulename -Force -ErrorAction Stop
+            Remove-Module -Name $modulename -Force -ErrorAction Stop
         }
     }
     catch
@@ -957,7 +957,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
             }
             catch
@@ -971,7 +971,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
             }
             catch
