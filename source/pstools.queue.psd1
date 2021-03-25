@@ -1,6 +1,7 @@
-﻿@{
+﻿
+@{
   RootModule = 'pstools.queue.psm1'
-  ModuleVersion = '1.3'
+  ModuleVersion = '1.3.1'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = '8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da'
   Author = 'Hannes Palmquist'
@@ -13,7 +14,7 @@
   PrivateData = @{
     ModuleName = 'pstools.queue'
     DateCreated = '2021-01-21'
-    LastBuildDate = '2021-03-23'
+    LastBuildDate = '2021-03-25'
     PSData = @{
       Tags = @('PSEdition_Desktop','PSEdition_Core','Windows','Linux','MacOS')
       ProjectUri = 'https://getps.dev/modules/pstools.queue/quickstart'
