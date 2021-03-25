@@ -436,10 +436,16 @@ Task -name 'Test' -depends @(
 Task -name 'Build' -depends @(
     'Test',
     'PatchVersion',
+    'ChangeLog',
+    'CreateModuleHelpFiles',
     'PreExportClean',
     'ExportCreate',
     'ExportPushModule',
+    'ExportSign', 
+    'BuildZIP', 
+    'BuildInstaller',
     'PublishToProGet',
+    'PublishToGallery', 
     'PostExportClean',
     'CommitAndPushRepository'
 )
@@ -449,7 +455,6 @@ Task -name 'Release' -depend @(
     'MinorVersion',
     'ChangeLog',
     'CreateModuleHelpFiles',
-    'CommitAndPushRepository'
     'PreExportClean',
     'ExportCreate',
     'ExportPushModule',
