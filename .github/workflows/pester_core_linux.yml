@@ -2,8 +2,14 @@
 on:
   pull_request:
     branches: [ main ]
+    paths: 
+    - 'source/**'
+    - 'tests/**'
   push:
     branches: [ main ]
+    paths: 
+    - 'source/**'
+    - 'tests/**'
 jobs:
   test-posh:
     runs-on: ubuntu-latest
