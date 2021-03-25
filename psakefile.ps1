@@ -589,7 +589,7 @@ Task -name 'ChangeLog' -action {
                 Write-Host
 
                 $Changes = @()
-                $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security'
+                $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security', 'done'
                 while ($Type -ne 'done')
                 {
                     Write-Host -Object ('      Enter change item: ') -ForegroundColor DarkGray -NoNewline
@@ -598,7 +598,7 @@ Task -name 'ChangeLog' -action {
                         Type    = $Type
                         Message = $Change
                     }
-                    $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security'
+                    $Type = Show-MultiChoise -MultiChoise 'added', 'changed', 'deprecated', 'removed', 'fixed', 'security', 'done'
                 }
 
                 Write-Host
@@ -827,7 +827,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -913,10 +913,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -name $modulename -Force -ErrorAction Stop
+            Remove-Module -Name $modulename -Force -ErrorAction Stop
         }
     }
     catch
