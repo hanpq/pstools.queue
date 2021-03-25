@@ -439,8 +439,8 @@ Task -name 'Build' -depends @(
     'PreExportClean',
     'ExportCreate',
     'ExportPushModule',
-    'PostExportClean',
     'PublishToProGet',
+    'PostExportClean',
     'CommitAndPushRepository'
 )
 
@@ -456,6 +456,7 @@ Task -name 'Release' -depend @(
     'ExportSign', 
     'BuildZIP', 
     'BuildInstaller',
+    'PublishToProGet',
     'PublishToGallery', 
     'PostExportClean'
     'CommitAndPushRepository'
