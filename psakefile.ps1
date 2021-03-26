@@ -463,11 +463,17 @@ Task -name 'Release' -depend @(
     'BuildInstaller',
     'PublishToProGet',
     'PublishToGallery', 
-    'PostExportClean'
-    'CommitAndPushRepository'
+    'PostExportClean',
+    'CommitAndPushRepository',
+    'TagAndRelease'
 )
 
 Task -name default -depends 'Build'
+
+Task -name 'TagAndRelease' -precondition { $buildconfig.Github } -action {
+    git -C $path_root tag -a ('v{0}' -f $import_modulemanifest.moduleversion) -m ('Version {0} released' -f $import_modulemanifest.moduleversion)
+    git -C $path_root push origin ('v{0}' -f $import_modulemanifest.moduleversion)
+}
 
 Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -action {
     if (Test-Path -Path (Join-Path -Path $path_root -ChildPath '.git'))
