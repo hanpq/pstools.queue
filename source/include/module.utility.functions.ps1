@@ -4,7 +4,8 @@ function Get-ModuleConfiguration
     try
     {
         Get-Variable -Scope Global -Name ('ModuleConfiguration_{0}' -f ($MyInvocation.MyCommand.Module.Name)) -ValueOnly -ErrorAction Stop
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to retrevie module configuration' -ErrorRecord $_
     }
@@ -45,7 +46,7 @@ function Initialize-ModuleConfiguration
                         '.cred' { $Content = Import-Clixml -Path $File.FullName  -ErrorAction Stop }
                         default
                         {
-                            Write-Warning -Message 'Failed to import configuration file, unknown extension' -Target $File.Name
+                            Write-Warning -Message ('Failed to import configuration file {0}, unknown extension' -f $File.Name)
                             $Content = $null
                         }
                     }
@@ -53,9 +54,10 @@ function Initialize-ModuleConfiguration
                     {
                         $null = $this.ModuleFiles.Add($File.BaseName, $Content)
                     }
-                } catch
+                }
+                catch
                 {
-                    Write-Error -Message 'Failed to import configuration' -TargetObject $File.BaseName -ErrorRecord $_
+                    Write-Error -Message ('Failed to import configuration {0} with error: {1}' -f $File.BaseName, $_.exception.message)
                 }
             }
         }
@@ -91,7 +93,8 @@ function Initialize-ModuleConfiguration
     try
     {
         $null = New-Variable -Scope Global -Name ('ModuleConfiguration_{0}' -f ($MyInvocation.MyCommand.Module.Name)) -Value ([ModuleConfiguration]::New($MyInvocation)) -Force -ErrorAction Stop
-    } catch
+    }
+    catch
     {
         Write-Error -Message 'Failed to store ModuleConfiguration' -ErrorRecord $_
     }
@@ -241,11 +244,13 @@ function Write-PSProgress
         try
         {
             Remove-Variable -Name $StartTimeVariableName -ErrorAction Stop -Scope Global
-        } catch
+        }
+        catch
         {
             throw $_
         }
-    } elseif (-not (Get-Variable -Name $StartTimeVariableName -Scope Global -ErrorAction SilentlyContinue))
+    }
+    elseif (-not (Get-Variable -Name $StartTimeVariableName -Scope Global -ErrorAction SilentlyContinue))
     {
         # Global variable do not exist, create global variable
         if ($null -eq $StartTime)
@@ -253,12 +258,14 @@ function Write-PSProgress
             # No start time defined with parameter, use current timestamp as starttime
             Set-Variable -Name $StartTimeVariableName -Value $TimeStamp -Scope Global
             $StartTime = $TimeStamp
-        } else
+        }
+        else
         {
             # Start time defined with parameter, use that value as starttime
             Set-Variable -Name $StartTimeVariableName -Value $StartTime -Scope Global
         }
-    } else
+    }
+    else
     {
         # Global start time variable is defined, collect and use it
         $StartTime = Get-Variable -Name $StartTimeVariableName -Scope Global -ErrorAction Stop -ValueOnly
@@ -304,7 +311,8 @@ function Write-PSProgress
                 if ($NoTimeStats)
                 {
                     $WriteProgressSplat.Status = ('{0} - {1}%' -f $CountProgress, $Percent)
-                } else
+                }
+                else
                 {
                     # Total seconds elapsed since start
                     $TotalSeconds = ($TimeStamp - $StartTime).TotalSeconds
@@ -427,7 +435,8 @@ function Use-CallerPreference
         if ( $SessionState -eq $ExecutionContext.SessionState )
         {
             Set-Variable -Scope 1 -Name $variable.Name -Value $variable.Value -Force -Confirm:$false -WhatIf:$false
-        } else
+        }
+        else
         {
             $SessionState.PSVariable.Set($variable.Name, $variable.Value)
         }
