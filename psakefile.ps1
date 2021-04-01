@@ -413,7 +413,7 @@ TaskSetup -setup {
     }
 }
 
-Task -name 'SetupBuildEnv' -depends @(
+Task -name 'PrepareModule' -depends @(
     'CreateMissingFolders',
     'ValidateModuleConfiguration',
     'FindMissingTests',
@@ -428,31 +428,13 @@ Task -name 'SetupBuildEnv' -depends @(
 
 # Published tasks
 Task -name 'Test' -depends @(
-    'SetupBuildEnv',
+    'PrepareModule',
     'PesterModuleTests',
     'PesterUnitTests',
     'PesterIntegrationTests'
 )
-Task -name 'Build' -depends @(
-    'Test',
-    'PatchVersion',
-    'ChangeLog',
-    'CreateModuleHelpFiles',
-    'PreExportClean',
-    'ExportCreate',
-    'ExportPushModule',
-    'ExportSign', 
-    'BuildZIP', 
-    'BuildInstaller',
-    'PublishToProGet',
-    'PublishToGallery', 
-    'PostExportClean',
-    'CommitAndPushRepository'
-)
 
 Task -name 'Release' -depend @(
-    'Test',
-    'MinorVersion',
     'ChangeLog',
     'CreateModuleHelpFiles',
     'PreExportClean',
@@ -468,7 +450,23 @@ Task -name 'Release' -depend @(
     'TagAndRelease'
 )
 
-Task -name default -depends 'Build'
+Task -name 'ReleaseMajor' -depends @(
+    'Test',
+    'MajorVersion',
+    'Release'
+)
+Task -name 'ReleaseMinor' -depends @(
+    'Test',
+    'MinorVersion',
+    'Release'
+)
+Task -name 'ReleasePatch' -depends @(
+    'Test',
+    'PatchVersion',
+    'Release'
+)
+
+Task -name default -depends 'Test'
 
 Task -name 'TagAndRelease' -precondition { $buildconfig.Github } -action {
     $import_modulemanifest = Import-PowerShellDataFile -Path $path_modulemanifest
@@ -481,7 +479,7 @@ Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -acti
     {
         git -C $path_root add .
         git -C $path_root commit -m 'Build commit'
-        git -C $path_root push
+        git -C $path_root push --quiet
     }
     else 
     {
@@ -490,7 +488,7 @@ Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -acti
         git -C $path_root commit -m 'And so, it begins.'
         git remote add origin https://github.com/hanpq/$modulename.git
         hub create -p
-        git push -u origin HEAD
+        git push -u origin HEAD -quiet
     }
 }
 
@@ -831,7 +829,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -917,10 +915,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -Name $modulename -Force -ErrorAction Stop
+            Remove-Module -name $modulename -Force -ErrorAction Stop
         }
     }
     catch
@@ -986,7 +984,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
             }
             catch
@@ -1000,7 +998,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
             }
             catch
