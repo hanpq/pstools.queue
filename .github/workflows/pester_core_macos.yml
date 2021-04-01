@@ -23,7 +23,7 @@ jobs:
         $PesterConfiguration = [PesterConfiguration]::Default
         $PesterConfiguration.Run.Path = "tests/unit"
         $PesterConfiguration.Run.Exit = $true
-        $PesterConfiguration.Filter.ExcludeTag = 'WindowsOnly'
+        $PesterConfiguration.Filter.ExcludeTag = 'WindowsOnly','LinuxOnly','DesktopOnly'
         $PesterConfiguration.Output.Verbosity = "Detailed"
         Invoke-Pester -Configuration $PesterConfiguration
       shell: pwsh
