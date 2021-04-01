@@ -23,6 +23,7 @@ jobs:
         $PesterConfiguration = [PesterConfiguration]::Default
         $PesterConfiguration.Run.Path = "tests/Unit"
         $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Filter.ExcludeTag = 'LinuxOnly','MacOSOnly','CoreOnly'
         $PesterConfiguration.Output.Verbosity = "detailed"
         Invoke-Pester -Configuration $PesterConfiguration
       shell: powershell
