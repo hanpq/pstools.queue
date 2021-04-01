@@ -535,21 +535,11 @@ Task -name 'CreateMissingFolders' {
 Task -name 'PublishToGallery' -precondition { $buildconfig.PSGallery } -action {
     try
     {
-        Write-Host
-        $Continue = Confirm-Proceed -Title 'Publish to PSGallery' -Message 'Are you sure that you want to publish this module to the PSGallery?' -YesHelp 'Publish module to PSGallery' -NoHelp 'Do not publish module to PSGallery' -Default 1
-        Write-Host
-        if ($Continue)
-        {
-            $Measure = Measure-Command -Expression {
-                $ExportFolder = Join-Path -Path $path_root -ChildPath ('\stage\{0}' -f $modulename) -ErrorAction Stop # "\PSSolutionModules\<ModuleName>\Export\<ModuleName>"
-                Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey $Env:NUGET_KEY -ErrorAction Stop
-            }
-            Write-CheckListItem -Message 'Published module to PSGallery' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
+        $Measure = Measure-Command -Expression {
+            $ExportFolder = Join-Path -Path $path_root -ChildPath ('\stage\{0}' -f $modulename) -ErrorAction Stop # "\PSSolutionModules\<ModuleName>\Export\<ModuleName>"
+            Publish-Module -Path $ExportFolder -Repository 'PSGallery' -NuGetApiKey $Env:NUGET_KEY -ErrorAction Stop
         }
-        else
-        {
-            Write-Warning -Message 'Module was not published to PSGallery'
-        }
+        Write-CheckListItem -Message 'Published module to PSGallery' -Severity Positive -Milliseconds $Measure.TotalMilliseconds
     }
     catch
     {
