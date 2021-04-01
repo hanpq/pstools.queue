@@ -77,9 +77,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Add-QueueItem -Queue $Queue -Item 'Foo'</dev:code>
+        <dev:code>Add-QueueItem -Queue $Queue -Item 'Foo'
+This example shows how to add an item to the queue</dev:code>
         <dev:remarks>
-          <maml:para>This example shows how to add an item to the queue</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -138,9 +139,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Clear-AllQueueItems -Queue $Queue</dev:code>
+        <dev:code>Clear-AllQueueItems -Queue $Queue
+This example shows how to discard all items of the provided queue</dev:code>
         <dev:remarks>
-          <maml:para>This example shows how to discard all items of the provided queue</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -199,9 +201,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Get-AllQueueItems -Queue $Queue</dev:code>
+        <dev:code>Get-AllQueueItems -Queue $Queue
+This example how to retreive all queue items remaining in the queue</dev:code>
         <dev:remarks>
-          <maml:para>This example how to retreive all queue items remaining in the queue</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -260,9 +263,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Get-NextQueueItem -Queue $Queue</dev:code>
+        <dev:code>Get-NextQueueItem -Queue $Queue
+This example with return the next item in queue.</dev:code>
         <dev:remarks>
-          <maml:para>This example with return the next item in queue.</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -297,9 +301,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$Queue = Initialize-Queue</dev:code>
+        <dev:code>$Queue = Initialize-Queue
+This example will create a new instance of the queue object</dev:code>
         <dev:remarks>
-          <maml:para>This example will create a new instance of the queue object</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -358,9 +363,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Measure-Queue -Queue $Queue</dev:code>
+        <dev:code>Measure-Queue -Queue $Queue
+This example will return a object containing performance metrics for the provided queue.</dev:code>
         <dev:remarks>
-          <maml:para>This example will return a object containing performance metrics for the provided queue.</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -419,9 +425,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Show-NextQueueItem</dev:code>
+        <dev:code>Show-NextQueueItem
+Description of example</dev:code>
         <dev:remarks>
-          <maml:para>Description of example</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

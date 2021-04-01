@@ -23,9 +23,8 @@ Adds a new item to the queue
 ### EXAMPLE 1
 ```
 Add-QueueItem -Queue $Queue -Item 'Foo'
-```
-
 This example shows how to add an item to the queue
+```
 
 ## PARAMETERS
 

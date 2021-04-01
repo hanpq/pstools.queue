@@ -24,9 +24,8 @@ That object will be removed from the queue.
 ### EXAMPLE 1
 ```
 Get-NextQueueItem -Queue $Queue
-```
-
 This example with return the next item in queue.
+```
 
 ## PARAMETERS
 

@@ -23,9 +23,8 @@ Collect all remaining queue items
 ### EXAMPLE 1
 ```
 Get-AllQueueItems -Queue $Queue
-```
-
 This example how to retreive all queue items remaining in the queue
+```
 
 ## PARAMETERS
 
