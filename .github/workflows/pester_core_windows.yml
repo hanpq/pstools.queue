@@ -24,6 +24,7 @@ jobs:
         $PesterConfiguration = [PesterConfiguration]::Default
         $PesterConfiguration.Run.Path = "tests/unit"
         $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Filter.ExcludeTag = 'LinuxOnly','MacOSOnly','DesktopOnly'
         $PesterConfiguration.CodeCoverage.Enabled = $true
         $PesterConfiguration.CodeCoverage.Path = @("source/public/*","source/private/*")
         $PesterConfiguration.Output.Verbosity = "Detailed"
