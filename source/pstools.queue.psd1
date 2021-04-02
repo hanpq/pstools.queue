@@ -14,7 +14,7 @@
     PrivateData            = @{
         ModuleName    = 'pstools.queue'
         DateCreated   = '2021-01-21'
-        LastBuildDate = '2021-04-01'
+        LastBuildDate = '2021-04-02'
         PSData        = @{
             Tags                       = @('PSEdition_Desktop', 'PSEdition_Core', 'Windows', 'Linux', 'MacOS')
             ProjectUri                 = 'https://getps.dev/modules/pstools.queue/quickstart'
