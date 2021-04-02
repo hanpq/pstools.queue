@@ -478,17 +478,17 @@ Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -acti
     if (Test-Path -Path (Join-Path -Path $path_root -ChildPath '.git'))
     {
         git -C $path_root add .
-        git -C $path_root commit -m 'Build commit'
+        git -C $path_root commit -m 'Build commit' --quiet
         git -C $path_root push --quiet
     }
     else 
     {
         git -C $path_root init --initial-branch=main
         git -C $path_root add .
-        git -C $path_root commit -m 'And so, it begins.'
+        git -C $path_root commit -m 'And so, it begins.'  --quiet
         git remote add origin https://github.com/hanpq/$modulename.git
         hub create -p
-        git push -u origin HEAD -quiet
+        git push -u origin HEAD  --quiet
     }
 }
 
