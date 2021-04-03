@@ -1,12 +1,16 @@
 ﻿<#PSScriptInfo
-    .VERSION 1.0.0
-    .GUID 8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da
-    .FILENAME Initialize-Queue.ps1
-    .AUTHOR Hannes Palmquist
-    .CREATEDDATE 2021-01-21
-    .COMPANYNAME 
-    .COPYRIGHT (c) 2021, Hannes Palmquist, All Rights Reserved
-#>
+{
+    "VERSION":  "1.0.0",
+    "GUID":  "8b96f3d4-ebf3-4c6a-a99a-1c5392ecc8da",
+    "FILENAME":  "Initialize-Queue.ps1",
+    "AUTHOR":  "Hannes Palmquist",
+    "CREATEDDATE":  "2021-01-21",
+    "COMPANYNAME":  [
+
+                    ],
+    "COPYRIGHT":  "(c) 2021, Hannes Palmquist, All Rights Reserved"
+}
+PSScriptInfo#>
 function Initialize-Queue {
     <#
     .DESCRIPTION

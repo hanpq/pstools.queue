@@ -23,8 +23,9 @@ Shows the next item in queue without removing it from queue.
 ### EXAMPLE 1
 ```
 Show-NextQueueItem
-Description of example
 ```
+
+Description of example
 
 ## PARAMETERS
 

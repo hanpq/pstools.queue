@@ -1,4 +1,17 @@
-﻿class ExtendedQueue {
+﻿<#PSScriptInfo
+{
+    "CREATEDDATE":  "2021-04-03",
+    "COPYRIGHT":  "(c) 2021, Hannes Palmquist, All Rights Reserved",
+    "GUID":  "ac27ffe4-e106-449f-9742-9f64b72af305",
+    "COMPANYNAME":  "Personal",
+    "Version":  "1.0.0.0",
+    "FILENAME":  "class.extendedqueue.ps1",
+    "AUTHOR":  "Hannes Palmquist",
+    "AUTHOREMAIL":  "hannes.palmquist@outlook.com"
+}
+PSScriptInfo#>
+
+class ExtendedQueue {
     [System.Collections.Queue]$Queue
     [system.collections.Generic.Queue[pscustomobject]]$LastOperations
     [int64]$TotalItemsAdded

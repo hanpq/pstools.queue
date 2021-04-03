@@ -23,8 +23,9 @@ Returns an object with performance metrics for the provided queue.
 ### EXAMPLE 1
 ```
 Measure-Queue -Queue $Queue
-This example will return a object containing performance metrics for the provided queue.
 ```
+
+This example will return a object containing performance metrics for the provided queue.
 
 ## PARAMETERS
 

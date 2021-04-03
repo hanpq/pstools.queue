@@ -23,8 +23,9 @@ Discard all queued items.
 ### EXAMPLE 1
 ```
 Clear-AllQueueItems -Queue $Queue
-This example shows how to discard all items of the provided queue
 ```
+
+This example shows how to discard all items of the provided queue
 
 ## PARAMETERS
 

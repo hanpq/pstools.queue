@@ -33,8 +33,9 @@ The module cmdlet Measure-Queue returns these metrics.
 ### EXAMPLE 1
 ```
 $Queue = Initialize-Queue
-This example will create a new instance of the queue object
 ```
+
+This example will create a new instance of the queue object
 
 ## PARAMETERS
 
