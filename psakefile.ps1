@@ -704,13 +704,18 @@ Task -name 'FindMissingTests' -action {
 
 Task -name 'UpdateFunctionPSScriptInfo' -action {
 
+    #$array_fileinfo_all_public_functions = @(Get-ChildItem -Path (Join-Path $path_root_source 'public') -Recurse -File -Filter '*.ps1')
+    $array_fileinfo_all_functions = [collections.arraylist]::New()
+    Get-ChildItem -Path "$path_root_source\public" -Recurse -File -Filter '*.ps1' | ForEach-Object { $null = $array_fileinfo_all_functions.Add($PSItem) }
+    Get-ChildItem -Path "$path_root_source\private" -Recurse -File -Filter '*.ps1' | ForEach-Object { $null = $array_fileinfo_all_functions.Add($PSItem) }
+    
     $array_fileinfo_all_public_functions = @(Get-ChildItem -Path (Join-Path $path_root_source 'public') -Recurse -File -Filter '*.ps1')
 
     foreach ($File in $array_fileinfo_all_public_functions)
     {
         try
         {
-            Import-Module pstools.psscriptinfo
+            Import-Module pstools.psscriptinfo -ErrorAction Stop
             $null = Get-PSScriptInfo -FilePath $File.FullName -ErrorAction Stop
             $Result = Update-PSScriptInfo -FilePath $File.FullName
             if ($Result)
