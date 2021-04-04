@@ -476,7 +476,7 @@ Task -name 'PrepareModule' -depends @(
     'UpdateEncoding',
     'UpdateEOL'
 )
-
+ 
 # Published tasks
 Task -name 'Test' -depends @(
     'PrepareModule',
