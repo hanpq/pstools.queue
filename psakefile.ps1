@@ -377,18 +377,6 @@ function Set-FileEndOfLine
     }
 }
 
-# Check dependency modules
-$Modules = @('pstools.psscriptinfo', 'configuration', 'pester')
-foreach ($module in $modules)
-{
-    if (-not (Get-Module $module -ListAvailable))
-    {
-        Write-CheckListItem -Severity Negative -Message "Module [$module] was not found, aborting..."
-        break
-    }
-}
-
-
 Properties {
     $path_root = $PSScriptRoot
     $modulename = (Get-Item -Path $path_root).Name
@@ -424,7 +412,21 @@ TaskSetup -setup {
     }
 }
 
+Task -name 'BuildScriptDependencies' {
+    # Check dependency modules
+    $Modules = @('pstools.psscriptinfo', 'configuration', 'pester')
+    foreach ($module in $modules)
+    {
+        if (-not (Get-Module -Name $module -ListAvailable))
+        {
+            Write-CheckListItem -Severity Negative -Message "Module [$module] was not found, aborting..."
+            break
+        }
+    }    
+}
+
 Task -name 'PrepareModule' -depends @(
+    'BuildScriptDependencies'
     'CreateMissingFolders',
     'ValidateModuleConfiguration',
     'FindMissingTests',
