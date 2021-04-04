@@ -377,6 +377,44 @@ function Set-FileEndOfLine
     }
 }
 
+function InvokePesterHelper
+{
+    param (
+        [ValidateSet('Unit', 'Module', 'Integration')]$TypeOfTest,
+        [ValidateSet('powershell', 'pwsh')]$powershellhost,
+        $pathroot
+    )
+
+    $path_root = 'C:\Users\hanpalmq\OneDrive\DEV\Powershell\modules\pstools.daikin'
+    $PesterRun = @"
+    Import-Module Pester
+    `$PesterConfig = [PesterConfiguration]::Default
+    `$PesterConfig.Run.Path = '{0}\Tests\{1}'
+    `$PesterConfig.Run.PassThru = `$true
+    `$PesterConfig.Output.Verbosity = 'Detailed'
+    `$Result = Invoke-Pester -Configuration `$PesterConfig
+    if (`$Result.FailedCount -gt 0) {{throw}}
+"@ -f $pathroot, $TypeOfTest
+    $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+    $pinfo.FileName = $powershellhost
+    $pinfo.RedirectStandardError = $true
+    $pinfo.RedirectStandardOutput = $false
+    $pinfo.UseShellExecute = $false
+    $pinfo.Arguments = '-noprofile', '-command', $PesterRun
+    $p = New-Object System.Diagnostics.Process
+    $p.StartInfo = $pinfo
+    $p.Start() | Out-Null
+    $p.WaitForExit()
+    if ($p.ExitCode -eq 0)
+    {
+        return $true
+    }
+    else
+    {
+        return $false
+    }
+}
+
 Properties {
     $path_root = $PSScriptRoot
     $modulename = (Get-Item -Path $path_root).Name
@@ -443,8 +481,11 @@ Task -name 'PrepareModule' -depends @(
 Task -name 'Test' -depends @(
     'PrepareModule',
     'PesterModuleTests',
+    'PesterModuleTests_Core',
     'PesterUnitTests',
-    'PesterIntegrationTests'
+    'PesterUnitTests_Core',
+    'PesterIntegrationTests',
+    'PesterIntegrationTests_Core'
 )
 
 Task -name 'Release' -depend @(
@@ -866,66 +907,101 @@ Task -name 'UpdateFileList' -action {
     }
 } 
 
-Task -name 'PesterUnitTests' -precondition { $buildconfig.RunPesterTests } -action {    
+Task -name 'PesterUnitTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {    
     # Pester configuration
     if (Get-ChildItem "$path_root\Tests\Unit")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Unit"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
+        $Result = InvokePesterHelper -TypeOfTest Unit -powershellhost powershell -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
         else
         {
-            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+            throw
         }
     }
 } 
 
-Task -name 'PesterModuleTests' -precondition { $buildconfig.RunPesterTests } -action {    
+Task -name 'PesterModuleTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {    
     # Run Tests
     if (Get-ChildItem "$path_root\Tests\Module")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Module"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
+        $Result = InvokePesterHelper -TypeOfTest Module -powershellhost powershell -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
         else
         {
-            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+            throw
         }
     }
 } 
 
-Task -name 'PesterIntegrationTests' -precondition { $buildconfig.RunPesterTests } -action {   
+Task -name 'PesterIntegrationTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {   
 
     if (Get-ChildItem "$path_root\Tests\Integration")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Integration"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
-        }
-        else
+        $Result = InvokePesterHelper -TypeOfTest Integration -powershellhost powershell -pathroot $path_root
+        if ($Result)
         {
             Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
+        else
+        {
+            throw
+        }
+
+    }
+} 
+
+Task -name 'PesterUnitTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {    
+    # Pester configuration
+    if (Get-ChildItem "$path_root\Tests\Unit")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Unit -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+    }
+} 
+
+Task -name 'PesterModuleTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {    
+    # Run Tests
+    if (Get-ChildItem "$path_root\Tests\Module")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Module -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+    }
+} 
+
+Task -name 'PesterIntegrationTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {   
+
+    if (Get-ChildItem "$path_root\Tests\Integration")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Integration -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+
     }
 } 
 
@@ -1175,45 +1251,52 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
         Sort-Object -Property 'VersionObject' -Descending |
         Select-Object -Skip 2 | 
         ForEach-Object {
-
-            # Workaround, a bug with remove-item and onedrive with enabled filesondemand caused it to fail when removing items. However 
-            # using the Delete method of the file item circumvents this issue.
             $currentitem = $PSItem
-            $path = $currentitem.fullname
-            $Counter = 0
-            while ((Get-ChildItem $path -Recurse) -and $Counter -le 10)
+            try
             {
-                $AllItems = Get-ChildItem $path -Recurse | Sort-Object -Property fullname -Descending
-                $AllItems | ForEach-Object {
+                # Workaround, a bug with remove-item and onedrive with enabled filesondemand caused it to fail when removing items. However 
+                # using the Delete method of the file item circumvents this issue.
+                $path = $currentitem.fullname
+                $Counter = 0
+                while ((Get-ChildItem $path -Recurse) -and $Counter -le 10)
+                {
+                    $AllItems = Get-ChildItem $path -Recurse | Sort-Object -Property fullname -Descending
+                    $AllItems | ForEach-Object {
+                        try
+                        {
+                            $PSItem.Delete()
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+
+                    $Counter++
+                }
+                if ($counter -gt 10)
+                {
+                    Write-CheckListItem -Message ('Failed to remove old version: {0} with error: loop counter exceeded' -f $CurrentItem.Name) -Severity Negative
+                }
+                else
+                {
                     try
                     {
-                        $PSItem.Delete()
+                        $Item = Get-Item $path
+                        $Item.Delete()
+                        Write-CheckListItem -Message ('Successfully removed old version: {0}' -f $CurrentItem.Name) -Severity Positive
                     }
                     catch
                     {
-
-                    }
+                        Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
+                    } 
                 }
-
-                $Counter++
             }
-            if ($counter -gt 10)
+            catch
             {
-                Write-CheckListItem -Message ('Failed to remove old version: {0} with error: loop counter exceeded' -f $CurrentItem.Name) -Severity Negative
+                Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
             }
-            else
-            {
-                try
-                {
-                    $Item = Get-Item $path
-                    $Item.Delete()
-                    Write-CheckListItem -Message ('Successfully removed old version: {0}' -f $CurrentItem.Name) -Severity Positive
-                }
-                catch
-                {
-                    Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
-                } 
-            }
+            
         }
     }
 } 
