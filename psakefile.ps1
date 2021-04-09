@@ -385,7 +385,6 @@ function InvokePesterHelper
         $pathroot
     )
 
-    $path_root = 'C:\Users\hanpalmq\OneDrive\DEV\Powershell\modules\pstools.daikin'
     $PesterRun = @"
     Import-Module Pester
     `$PesterConfig = [PesterConfiguration]::Default
@@ -525,7 +524,7 @@ Task -name default -depends 'Test'
 Task -name 'TagAndRelease' -precondition { $buildconfig.Github } -action {
     $import_modulemanifest = Import-PowerShellDataFile -Path $path_modulemanifest
     git -C $path_root tag -a ('v{0}' -f $import_modulemanifest.moduleversion) -m ('Version {0} released' -f $import_modulemanifest.moduleversion)
-    git -C $path_root push origin ('v{0}' -f $import_modulemanifest.moduleversion)
+    git -C $path_root push origin ('v{0}' -f $import_modulemanifest.moduleversion) --quiet
 }
 
 Task -name 'CommitAndPushRepository' -precondition { $buildconfig.Github } -action {
@@ -771,9 +770,7 @@ Task -name 'UpdateFunctionPSScriptInfo' -action {
         {
             Import-Module pstools.psscriptinfo -ErrorAction Stop
             $null = Get-PSScriptInfo -FilePath $File.FullName -ErrorAction Stop
-            $Result = Update-PSScriptInfo -FilePath $File.FullName -ErrorAction Stop
-            # No way of knowing if psscriptinfo has been updated because it is always overwritten when using Update-PSScriptInfo
-            #Write-CheckListItem -Message ('Updated PSScriptInfo for: {0}' -f $File.Name) -Severity Positive
+            $null = Update-PSScriptInfo -FilePath $File.FullName -ErrorAction Stop
         }
         catch
         {
@@ -794,9 +791,7 @@ Task -name 'UpdateEncoding' -action {
         {
             try
             {
-                $Measure = Measure-Command -Expression {
-                    Convert-FileEncoding -Path $PSItem.FullName -SourceEncoding $Encoding -NewEncoding 'utf-8' -OutputWithBom -ErrorAction Stop
-                }
+                Convert-FileEncoding -Path $PSItem.FullName -SourceEncoding $Encoding -NewEncoding 'utf-8' -OutputWithBom -ErrorAction Stop
                 Write-CheckListItem -Message ('Converted encoding for file {1} from {0} to UTF8BOM ' -f $Encoding, $PSItem.Name) -Severity Positive
             }
             catch
@@ -867,9 +862,7 @@ Task -name 'UpdateFunctionsToExport' {
 Task -name 'UpdateLastBuildDate' -action {
     try
     {
-        $Measure = Measure-Command -Expression {
-            Update-Metadata -Path $path_modulemanifest -PropertyName 'LastBuildDate' -Value (Get-Date).ToString('yyyy-MM-dd')
-        }
+        Update-Metadata -Path $path_modulemanifest -PropertyName 'LastBuildDate' -Value (Get-Date).ToString('yyyy-MM-dd')
     }
     catch
     {
@@ -884,17 +877,15 @@ Task -name 'UpdateFileList' -action {
         $SavedErrorActionPreference = $global:ErrorActionPreference
         $global:ErrorActionPreference = 'Stop'
 
-        $Measure = Measure-Command -Expression {
-            Push-Location -Path $path_root_source
-            $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
-            $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
-                    Resolve-Path -Path $PSItem.FullName -Relative
-                )
-            }
-            Pop-Location
-            Update-Metadata -Path $path_modulemanifest -PropertyName FileList -Value $AllSourceFiles.RelativePath
+        Push-Location -Path $path_root_source
+        $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
+        $AllSourceFiles | ForEach-Object {
+            $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
+                Resolve-Path -Path $PSItem.FullName -Relative
+            )
         }
+        Pop-Location
+        Update-Metadata -Path $path_modulemanifest -PropertyName FileList -Value $AllSourceFiles.RelativePath
     }
     catch
     {
@@ -1008,12 +999,10 @@ Task -name 'PesterIntegrationTests_Core' -precondition { $buildconfig.RunPesterT
 Task -name 'CreateModuleHelpFiles' -action {
     try
     {
-        $Measure = Measure-Command -Expression {
-            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
-            $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -Name $modulename -Force -ErrorAction Stop
-        }
+        Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
+        $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
+        $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
+        Remove-Module -Name $modulename -Force -ErrorAction Stop
     }
     catch
     {
@@ -1025,13 +1014,10 @@ Task -name 'CreateModuleHelpFiles' -action {
 Task -name 'PreExportClean' -action {
     try
     {
-        $Measure = Measure-Command -Expression {
-            
-            while ((Get-ChildItem -Path "$path_root\stage\$modulename" -Recurse))
-            {
-                (Get-ChildItem -Path "$path_root\stage\$modulename" -Recurse) | ForEach-Object {
-                    $_ | Remove-Item -Force -Confirm:$false -ErrorAction SilentlyContinue -Recurse
-                }
+        while ((Get-ChildItem -Path "$path_root\stage\$modulename" -Recurse))
+        {
+            (Get-ChildItem -Path "$path_root\stage\$modulename" -Recurse) | ForEach-Object {
+                $_ | Remove-Item -Force -Confirm:$false -ErrorAction SilentlyContinue -Recurse
             }
         }
     }
