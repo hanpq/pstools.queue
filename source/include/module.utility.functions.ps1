@@ -106,8 +106,9 @@ function pslog
     param(
         [parameter(Position = 0)]
         [ValidateSet('Success', 'Info', 'Warning', 'Error', 'Verbose', 'Debug')]
+        [Alias('Type')]
         [string]
-        $Severety,
+        $Severity,
         
         [parameter(Mandatory, Position = 1)]
         [string]
