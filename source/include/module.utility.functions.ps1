@@ -136,7 +136,7 @@ function pslog
 
     process
     {
-        switch ($Severety)
+        switch ($Severity)
         {
             'Success'
             {
