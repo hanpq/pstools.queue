@@ -5,11 +5,39 @@ Initialize-ModuleConfiguration
 Import-Module Microsoft.PowerShell.Security -Force -ErrorAction Stop
 
 # Import public and private functions files
+Push-Location -Path $PSScriptRoot
 Get-ChildItem -Path (Get-ModuleConfiguration).ModuleRootPath -Directory | Where-Object { $_.name -eq 'public' -or $_.name -eq 'private' } | ForEach-Object {
     Get-ChildItem -Path $_.FullName -Include '*.ps1' -Recurse -Exclude '*.Tests.*' | ForEach-Object {
-        . $_.FullName
+        $CurrentFile = $PSItem
+        try
+        {
+            . $_.FullName
+        }
+        catch
+        {
+            if ($PSItem.FullyQualifiedErrorId -eq 'ScriptRequiresUnmatchedPSEdition')
+            {
+                if ($PSVersionTable.PSEdition -eq 'Desktop')
+                {
+                    Write-Warning -Message ('Skipped importing Core-only function {0}' -f $CurrentFile.BaseName)
+                }
+                else
+                {
+                    Write-Warning -Message ('Skipped importing Desktop-only function {0}' -f $CurrentFile.BaseName)
+                }
+            }
+            elseif ($PSItem.FullyQualifiedErrorId -eq 'ScriptRequiresElevation')
+            {
+                Write-Warning -Message ('Skipped importing Run-As-Administrator function {0}' -f $CurrentFile.BaseName)
+            }
+            else
+            {
+                Write-Error -Message ('Failed to import function {0} with error: {1}' -f $CurrentFile.BaseName, $PSItem)
+            }
+        }
     }
 }
+Pop-Location
 
 # Evaluate compatible powershell editions
 $Continue = $true
@@ -35,7 +63,7 @@ if ($Continue)
         if ($AuthResult -eq 'HashMismatch')
         {
             $Passing = $false
-            Write-CheckListItem -Message ('Hash validation failed: {0}' -f $PSItem.Name)
+            Write-Host "Hash validation failed to $($PSItem.Name). The script has been modified. To protect the system this module will not load." -ForegroundColor Red
         }
     }
     if ($Passing -eq $false)
